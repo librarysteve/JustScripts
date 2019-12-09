@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function USAGE() {
+        echo "usage:"
+        echo "ping-sweep address-range"
+        echo "ex:"
+        echo "ping-sweep 102.168.1.0-254"
+        exit 0
+}
+
+
+if [[ -z $1 ]]; then
+	USAGE
+
+else
+	START=$(echo $1 | cut -d - -f 1 | cut -d . -f 4)
+	END=$(echo $1 | cut -d - -f 2)
+	SUBNET=$(echo $1 | cut -d . -f-3)
+fi
+
+
+echo $START
+echo $END
+echo $SUBNET
+if [[ -z $START ]]; then
+	USAGE
+elif [[ -z $END ]]; then
+	USAGE
+elif [[ -z $SUBNET ]]; then
+	USAGE
+else
+	for i in $(seq $START $END); do
+		ping -c 1 $SUBNET.$i
+	done
+fi
