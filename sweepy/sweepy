@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import ipcalc
+import re
+from pythonping import ping
+from colorama import Fore, Back, Style
+
+## Begin Banner 
+print(Fore.BLUE)
+print('''
+     _______.____    __    ____  _______  _______ .______   ____    ____ 
+    /       |\   \  /  \  /   / |   ____||   ____||   _  \  \   \  /   / 
+   |   (----` \   \/    \/   /  |  |__   |  |__   |  |_)  |  \   \/   /  
+    \   \      \            /   |   __|  |   __|  |   ___/    \_    _/   
+.----)   |      \    /\    /    |  |____ |  |____ |  |          |  |     
+|_______/        \__/  \__/     |_______||_______|| _|          |__| 
+
+		A python ping sweep scanner - for PWK
+			By: m3lodicmi0r
+''')
+print(Style.RESET_ALL)
+## End Banner
+
+
+## prompt user for IP range
+ip_range = input("range to scan [ex:192.168.1.0/24]: ")
+hosts = ipcalc.Network(ip_range) # List of IP address based on range
+num_hosts = len(hosts) # Number of address in that range
+
+# Ask user for verification to ping that many hosts
+verify_scan = input("Ping {} hosts in from range {}? [y/n]:".format(str(num_hosts), str(ip_range)))
+
+
+try:
+
+    if verify_scan == 'y':
+        for host in hosts:
+            print("Pinging host: {}".format(str(host)))
+            ping_out = ping(str(host), verbose=False, count=1)
+            if re.search("Reply", str(ping_out)):
+                print(Fore.GREEN + str(ping_out))
+                print(Style.RESET_ALL)
+            else:
+                print(ping_out)
+                print(Style.RESET_ALL)
+            
+        exit
+
+
+    else:
+        print("Exiting!!")
+        exit
+except KeyboardInterrupt:
+    print("\n")
+    print("Stopping!!!")
+    exit
+
+exit
